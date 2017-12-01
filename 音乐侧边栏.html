@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" >
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="css/ionic.css">
+	<script src="js/ionic.bundle.min.js"></script>
+	<script>
+		//创建模块
+		var app = angular.module('app', ['ionic'])
+		/*app.config(function($ionicConfigProvider) {
+				// 不同平台样式兼容性配置
+				$ionicConfigProvider.platform.android.tabs.position("bottom");
+				$ionicConfigProvider.platform.ios.tabs.position("bottom");
+				$ionicConfigProvider.platform.ios.navBar.alignTitle('center');
+				$ionicConfigProvider.platform.android.navBar.alignTitle('center');
+			})*/
+		//运行ionic平台
+		app.run(function($ionicPlatform) { //支持ionic平台
+			$ionicPlatform.ready(function() {
+				// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+				// for form inputs)
+				if (window.cordova && window.cordova.plugins.Keyboard) {
+					cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+				}
+				if (window.StatusBar) {
+					StatusBar.styleDefault();
+				}
+			});
+		})
+		app.config(function($stateProvider,$urlRouterProvider){
+			$urlRouterProvider.otherwise('/app/playlist')
+			$stateProvider	
+				.state("app",{
+					url:'/app',
+					templateUrl:'menu.html'
+
+				})
+				.state("app.playlist",{  //加载音乐列表的路径，必须先加载基础路由
+					url:'/playlist',
+					views:{
+						//这个是和menu.html中的ion-nav-view的name值对应
+						"menuContent":{    
+							templateUrl:'playlist.html'
+						}
+					}
+					
+				})
+				.state("app.center",{
+					url:'/center',
+					views:{
+						"menuContent":{
+							templateUrl:'center.html'
+						}
+					}
+				})
+				.state("app.shoucang",{
+					url:'/shoucang',
+					views:{
+						"menuContent":{
+							templateUrl:'shoucang.html'
+						}
+					}
+				})
+			})	
+		app.controller("contentCtrl",function($scope){
+			$scope.item = [
+				{id:"no0",name:"Fantasic Baby"},
+				{id:"no1",name:"王菲-匆匆那年"},
+				{id:"no2",name:"a"},
+				{id:"no3",name:"b"},
+				{id:"no4",name:"c"},
+				{id:"no5",name:"c"}
+			]
+			$scope.src="music/no2.mp3";
+			var playId = 2;
+			$scope.song=$scope.item[playId].name
+			
+			var isPlay=0;
+			$scope.fn=function(){
+				var audioPlayer = document.getElementById("musicplayer")
+				if(isPlay == 0){
+					audioPlayer.play();
+					isPlay=1
+				}else{
+					audioPlayer.pause();
+					isPlay=0;
+				}
+			}
+			$scope.playByid = function(i,val){
+				$scope.src = "music/"+i+".mp3"
+				document.getElementById("musicplayer").load()
+				document.getElementById("musicplayer").play()
+				isPlay=1;
+				playId=val
+				$scope.song=$scope.item[playId].name;
+				console.log(playId)
+				console.log($scope.song)
+			}
+			$scope.pre = function(){
+				if(playId<=0){
+					playId =5
+				}else{
+					playId--
+				}
+
+				$scope.src= "music/"+$scope.item[playId].id+".mp3"
+				document.getElementById("musicplayer").load()
+				document.getElementById("musicplayer").play()
+				$scope.song=$scope.item[playId].name;
+			}
+			$scope.next = function(){
+				if(playId>=5){
+					playId =0
+				}else{
+					playId++
+				}
+				$scope.src= "music/"+$scope.item[playId].id+".mp3"
+				document.getElementById("musicplayer").load()
+				document.getElementById("musicplayer").play()
+				$scope.song=$scope.item[playId].name;
+			}
+		})
+		
+	</script>
+	<style>
+		#top{margin-top:45px}
+		#control{margin-bottom: 30px}
+	</style>
+</head>
+<body ng-controller="contentCtrl">
+	<!-- 占位,这个里面显示什么内容由路由配置 -->
+	<ion-nav-view></ion-nav-view>	
+	<!--相当于创建三个template-->
+	<!-- 第一个是侧边栏 -->
+	<script id="menu.html" type="text/ng-template">
+		// 在menu模板里配置侧边栏完整信息
+		<ion-side-menus>
+			/*2.配置由侧边栏定向后右侧显示的导航信息*/
+			<ion-side-menu-content>
+				// 3.导航信息头
+				<ion-nav-bar class="bar-royal"></ion-nav-bar>
+				// 4.右侧导航信息对应的内容，name值和路由中的配置的view值对应
+				<ion-nav-view name="menuContent"></ion-nav-view>
+			</ion-side-menu-content>
+			// 侧边栏自己的内容
+			<ion-side-menu side="left">
+				<header class="bar bar-header bar-dark">
+					<h1 class="title">你好！</h1>	
+				</header>
+				<ion-content id="top">
+					<!-- 每一项添加路由，展示不同的页面 -->
+					<ion-item menu-close ui-sref="app.playlist">
+						音乐列表
+					</ion-item>
+					<ion-item menu-close ui-sref="app.center">
+						个人中心
+					</ion-item>
+					<ion-item menu-close ui-sref="app.playlist">
+						我的收藏
+					</ion-item>
+				</ion-content>		
+			</ion-side-menu>
+		</ion-side-menus>		
+	</script>
+	<script id="playlist.html" type="text/ng-template">
+		<!-- 音乐列表 -->
+		<ion-view title="音乐列表">
+			<ion-nav-buttons side="left">
+    			<button menu-toggle="left" class="button button-icon icon ion-navicon">
+    			</button>
+			</ion-nav-buttons>
+			<!--主体内容 -->
+			<ion-content>
+				<ion-list>
+					<ion-item ng-repeat="i in item" ng-click="playByid(i.id,$index)">
+						{{i.name}}
+					</ion-item>
+				</ion-list>
+				<h1 class="title">{{song}}</h1>
+			    <audio controls="controls" id="musicplayer">
+			      	<source ng-src="{{src}}" type="audio/mpeg">
+			    </audio>
+			</ion-content>
+			<ion-tabs class="tabs-royal" id="control">
+				<ion-tab title="上一首" ng-click="pre()"></ion-tab>
+				<ion-tab title="播放" ng-click="fn()"></ion-tab>
+				<ion-tab title="下一首" ng-click="next()"></ion-tab>
+				<ion-tab title="随便听听"></ion-tab>
+			</ion-tabs>
+		</ion-view>
+	</script>
+	<script id="center.html" type="text/ng-template">
+		<ion-view title="个人中心">
+			<ion-nav-buttons side="left">
+				<!-- 左右侧切换按钮 -->
+    			<button menu-toggle="left" class="button button-icon icon ion-navicon">
+    			</button>
+			</ion-nav-buttons>
+		</ion-view>
+	</script>
+	<script id="shoucang.html" type="text/ng-template">
+		<ion-view title="我的收藏">
+			<ion-nav-buttons side="left">
+				<!-- 左右侧切换按钮 -->
+    			<button menu-toggle="left" class="button button-icon icon ion-navicon">
+    			</button>
+			</ion-nav-buttons>
+		</ion-view>
+	</script>
+	
+</body>
+</html>

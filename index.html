@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>我的微信</title>
+    <meta name="viewport" 
+          content="width=device-width, user-sca lable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/ionic.css">
+    <link rel="stylesheet" href="css/css.css">
+    <script src="https://cdn.bootcss.com/ionic/1.3.2/js/ionic.bundle.min.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/controller.js"></script>
+</head>
+<body ng-controller="commonCtrl">
+<!--占位符-->
+<ion-nav-view></ion-nav-view>
+<ion-tabs class="tabs-dark tabs-icon-top" id="a">
+    <ion-tab ng-repeat="item in menu" title="{{item.name}}" href="{{item.href}}" icon-on="{{item.on_icon}}" icon-off="{{item.icon}}"></ion-tab>
+</ion-tabs>
+<!--步骤：1.index.html配置初始化：添加占位符，ng-app，引入三个文件
+2.在app.js里，先创建模块，在添加ionic平台，配置路由
+3.在controller.js里添加各个页面的控制器-->
+</body>
+</html>

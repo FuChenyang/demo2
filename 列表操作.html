@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/ionic.css">
+    <script src="js/ionic.bundle.min.js"></script>
+</head>
+<body ng-controller="indexCtrl">
+<ion-header-bar>
+    <button class="button button-icon icon ion-ios-close-outline" ng-click="isDelete=!isDelete;isReorder=false"></button>
+    <div class="title h1">列表操作</div>
+    <button class="button button-clear button-positive" ng-click="isDelete=false;isReorder=!isReorder">reorder</button>
+</ion-header-bar>
+<ion-content>
+   <!-- 控制删除按钮和编辑按钮是否显示show-delete和show-reorder-->
+    <!--不能直接在v层控制这两个功能的显示影藏，必须用绑定变量的方法-->
+    <ion-list show-delete="isDelete" show-reorder="isReorder" can-swipe="true">
+        <!--用ion-item要包ion-list-->
+        <ion-item ng-repeat="i in data">
+            <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
+            {{i.id}}-{{i.name}}
+            <!--重排序单独用法<od-reorder></od-reorder>-->
+            <ion-reorder-button class="ion-navicon" on-reorder="moveItem(i)"></ion-reorder-button>
+            <ion-option-button class="button-positive" ng-click="unread()">
+                标记为未读
+            </ion-option-button>
+            <ion-option-button class="button-assertive" ng-click="remove(i)">
+                删除
+            </ion-option-button>
+        </ion-item>
+    </ion-list>
+</ion-content>
+<script>
+    angular.module("app",['ionic'])
+        .controller("indexCtrl",function($scope,$ionicPopup){
+            $scope.data = [
+                {id:0,name:"张三1"},
+                {id:1,name:"张三2"},
+                {id:2,name:"张三3"},
+                {id:3,name:"张三4"},
+                {id:4,name:"张三5"},
+                {id:5,name:"张三6"},
+                {id:6,name:"张三7"},
+                {id:7,name:"张三8"},
+                {id:8,name:"张三9"},
+                {id:9,name:"张三10"}
+            ],
+             $scope.isDelete = false;
+             $scope.isReorder =false;
+             //删除和编辑都用到了splice方法
+             $scope.delete=function(i){
+                 $scope.data.splice(i,1);
+                 console.log(i)
+             }
+             $scope.moveItem = function(a,b,c){
+                 $scope.data.splice(b,1);
+                 $scope.data.splice(c,0,a);
+             }
+             $scope.unread=function(){
+                    var alertRes = $ionicPopup.alert({
+                        title:"是否标记为未读",
+                        template:"<div>标记为未读</div>"
+                    })
+                    alertRes.then(function(res){
+                        console.log("标记为未读")
+                    })
+             }
+            $scope.remove=function(obj){
+                var confirmRes = $ionicPopup.confirm({
+                    title:"真的这么忍心删除我吗",
+                    template:"<div>是否要删除未读</div>"
+                })
+                confirmRes.then(function(res){
+                    if(res){
+                        $scope.delete(obj);
+                    }
+                })
+            }
+        })
+</script>
+</body>
+</html>

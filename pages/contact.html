@@ -1,0 +1,21 @@
+
+<!--
+<ul>
+    <li ng-repeate="item in data">
+        <a href="#/message/detail/{{item.id}}">{{item.name}}</a>
+    </li>
+</ul>-->
+<ion-header-bar class="bar-dark">
+    <h1 class="title">通讯录</h1>
+</ion-header-bar>
+<ion-content>
+    <ion-list ng-repeate="item in items">
+        <!--灰色的分隔线item-divider-->
+        <ion-item class="item-divider">{{item.index}}</ion-item>
+        <ion-item ng-repeate="i in item.list" class="item-avatar" ui-sref="detail({id:{{i.id}}})">
+            <img ng-src="{{i.img}}" alt="">
+            <h2>{{i.name}}--{{i.id}}</h2>
+            <p>{{i.description}}</p>
+        </ion-item>
+    </ion-list>
+</ion-content>
